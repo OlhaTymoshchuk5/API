@@ -1,0 +1,94 @@
+<!--Olha Tymoshchuk Lab 2-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Beer API Asynchronous</title>
+  <link rel="stylesheet" type="text/css" href="./css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="description" content="my description" />
+  <script>
+        //Create global variables
+        let beerBaseUrl = "http://ontariobeerapi.ca";
+        let beerProducts = [];
+        var oneBrand = 0;
+
+        //Create a function that will make an AJAX call
+        function jsonAsync(url) {
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function () {
+            if (request.readyState === 4 && request.status === 200) {
+                //callback(request.responseText);
+                var jsonObject = JSON.parse(request.responseText);
+                for(var i = 0; i < jsonObject.length; i++){
+                  beerProducts.push(jsonObject[i]);
+                }
+                console.log(jsonObject);
+                //return request.responseText;
+                outputData();
+            }
+        };
+        request.open("GET", url);
+        request.send();
+        request.timeout = 10000;
+    }
+
+    function getBeerDataAsyn(){
+        var productsUrl = beerBaseUrl + "/products/";
+        jsonAsync(productsUrl);
+    }
+    //function to output data
+    function outputData(){
+        
+        console.log(beerProducts[0])
+        
+        document.getElementById("outputArea").innerHTML = beerProducts[oneBrand].name ;
+        
+        document.getElementById("outputPic").innerHTML = "<img src='" + beerProducts[oneBrand].image_url + "'/>";                 
+    }
+
+    //increment one beer
+    function  nextBeer(){
+        oneBrand += 1;
+
+        if( oneBrand < beerProducts.length){
+            outputData(oneBrand)
+        }
+        else{
+            alert("No beer left!");
+        }
+    } 
+    //decrement one beer
+    function prevBeer(){
+
+        oneBrand -=1;
+
+        if(oneBrand < 0){
+            alert("No beer in the array")
+        }
+        else{
+            outputData(oneBrand);
+        }
+    }   
+    
+
+    </script>
+</head>
+
+
+<body>
+    <div class="btn">
+    <input type="button" onclick="getBeerDataAsyn()" id="btnGetAsync" value="Get Beer Data Asynchronously" />
+    <input type="button" onclick="nextBeer()" id="btnNext" value="Next Beer" />
+    <input type="button" onclick="prevBeer()" id="btnPrev" value="Previous Beer" />
+    </div>
+    <div id="outputArea">
+        
+    </div>`
+
+    <div id="outputPic">
+
+    </div>
+    
+        
+    </body>
+</html>
